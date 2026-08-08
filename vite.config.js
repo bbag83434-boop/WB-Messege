@@ -7,19 +7,28 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      injectRegister: 'auto',
+      injectRegister: false,
       manifest: {
         name: 'My Messenger',
-        short_name: 'My Messenger',
+        short_name: 'Messenger',
         description: 'A private space for meaningful conversations.',
         theme_color: '#4f46e5',
-        background_color: '#f7f7fb',
+        background_color: '#171526',
         display: 'standalone',
         start_url: '/',
+        scope: '/',
+        orientation: 'portrait',
         icons: [
-          { src: 'icons/icon-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
-          { src: 'icons/icon-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any' }
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
+      },
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: false,
+        navigateFallback: '/index.html',
       },
       devOptions: {
         enabled: false

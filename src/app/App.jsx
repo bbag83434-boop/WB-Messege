@@ -1,7 +1,12 @@
 import AppShell from '../layouts/AppShell'
+import PWAExperience from '../pwa/PWAExperience'
 
 function App() {
-  return <AppShell />
+  return (
+    <PWAExperience>
+      <AppShell />
+    </PWAExperience>
+  )
 }
 
 export default App
