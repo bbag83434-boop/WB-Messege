@@ -23,7 +23,8 @@ const Icon = ({ name, size = 21, stroke = 1.9 }) => {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[name]}</svg>
 }
 
-function AppShell() {
+function AppShell({ user, onLogout }) {
+  const initials = user.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
   return (
     <main className="app-shell" aria-label="Aster messaging home">
       <motion.section className="app-shell__stage" initial={{ opacity: 0, y: 18, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}>
@@ -32,14 +33,14 @@ function AppShell() {
             <div className="brand-mark"><span /> <strong>aster</strong></div>
             <div className="top-actions">
               <motion.button whileTap={{ scale: 0.9 }} className="icon-button" aria-label="Search"><Icon name="search" /></motion.button>
-              <motion.button whileTap={{ scale: 0.9 }} className="avatar avatar--user" aria-label="Open profile">BK</motion.button>
+              <motion.button whileTap={{ scale: 0.9 }} className="avatar avatar--user" aria-label="Open profile">{user.profilePhoto ? <img src={user.profilePhoto} alt="" /> : initials}</motion.button>
             </div>
           </header>
 
           <motion.section className="welcome-card" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}>
             <div>
               <p className="eyebrow">MONDAY, OCTOBER 14</p>
-              <h1>Good morning,<br /><span>Biswanath.</span></h1>
+              <h1>Good morning,<br /><span>{user.name}.</span></h1>
               <p className="welcome-copy">You have 2 new messages waiting for you.</p>
             </div>
             <div className="welcome-orb"><Icon name="wave" size={37} stroke={1.65} /></div>
@@ -64,7 +65,8 @@ function AppShell() {
         <motion.button className="compose-button" aria-label="Start a new conversation" whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.9 }} initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.65, type: 'spring', stiffness: 260, damping: 18 }}><Icon name="plus" size={25} stroke={2.4} /></motion.button>
 
         <nav className="bottom-nav" aria-label="Primary navigation">
-          {[['chats', 'Chats'], ['contacts', 'Contacts'], ['discover', 'Discover'], ['profile', 'Profile']].map(([icon, label], index) => <motion.button key={label} whileTap={{ scale: 0.88 }} className={`nav-item ${index === 0 ? 'nav-item--active' : ''}`}><span><Icon name={icon} size={22} /></span>{label}</motion.button>)}
+          {[['chats', 'Chats'], ['contacts', 'Contacts'], ['discover', 'Discover']].map(([icon, label], index) => <motion.button key={label} whileTap={{ scale: 0.88 }} className={`nav-item ${index === 0 ? 'nav-item--active' : ''}`}><span><Icon name={icon} size={22} /></span>{label}</motion.button>)}
+          <motion.button whileTap={{ scale: 0.88 }} className="nav-item" onClick={onLogout}><span><Icon name="profile" size={22} /></span>Logout</motion.button>
         </nav>
       </motion.section>
     </main>
