@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
+import cors from 'cors'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import pg from 'pg'
@@ -8,8 +9,10 @@ import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 
 const app = express()
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'
+app.use(cors({ origin: allowedOrigin }))
 const server = createServer(app)
-const io = new Server(server, { cors: { origin: '*' } })
+const io = new Server(server, { cors: { origin: allowedOrigin } })
 const { Pool } = pg
 const database = new Pool({ connectionString: process.env.DATABASE_URL, ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false } })
 const port = Number(process.env.PORT || 3001)
