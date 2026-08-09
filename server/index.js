@@ -14,7 +14,7 @@ app.get('/api/health', async (_req, res, next) => {
   try { await database.query('SELECT 1'); return res.json({ ok: true }) } catch (error) { return next(error) }
 })
 
-const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'
+const allowedOrigin = process.env.ALLOWED_ORIGIN ? process.env.ALLOWED_ORIGIN.split(',') : ['http://localhost:5173'];
 app.use(cors({ origin: allowedOrigin }))
 const server = createServer(app)
 const io = new Server(server, { cors: { origin: allowedOrigin } })
