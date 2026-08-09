@@ -287,5 +287,5 @@ app.put('/api/messages/:messageId', requireAuth, async (req, res, next) => {
 })
 
 app.use((error, _req, res, _next) => { console.error(error); return res.status(500).json({ message: 'The server could not complete this request. Please try again.' }) })
-if (!process.env.VERCEL) server.listen(port, () => console.log(`My Messenger API listening on ${port}`))
+if (!process.env.VERCEL) server.listen(port, '0.0.0.0', () => console.log(`My Messenger API listening on ${port}`))
 export default app
