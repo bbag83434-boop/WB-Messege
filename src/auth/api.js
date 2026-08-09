@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api'
+const API_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api'
 const TOKEN_KEY = 'my-messenger-auth-token'
 
 export function getToken() { return localStorage.getItem(TOKEN_KEY) }
