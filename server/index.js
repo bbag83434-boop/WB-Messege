@@ -9,6 +9,11 @@ import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 
 const app = express()
+
+app.get('/api/health', async (_req, res, next) => {
+  try { await database.query('SELECT 1'); return res.json({ ok: true }) } catch (error) { return next(error) }
+})
+
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173'
 app.use(cors({ origin: allowedOrigin }))
 const server = createServer(app)
@@ -125,10 +130,6 @@ function requireVerifiedMobile(req, res, next) {
     return next()
   } catch { return res.status(401).json({ message: 'Your verification has expired. Request a new OTP.' }) }
 }
-
-app.get('/api/health', async (_req, res, next) => {
-  try { await database.query('SELECT 1'); return res.json({ ok: true }) } catch (error) { return next(error) }
-})
 
 app.post('/api/auth/send-otp', async (req, res, next) => {
   try {
