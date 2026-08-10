@@ -10,8 +10,38 @@ import { Server } from 'socket.io'
 
 const app = express()
 
-const allowedOrigin = process.env.ALLOWED_ORIGIN ? process.env.ALLOWED_ORIGIN.split(',').map(o => o.trim()) : ['http://localhost:5173'];
-app.use(cors({ origin: allowedOrigin }))
+const allowedOrigins = [
+  'https://wb-message.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:4173',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+]
+
+if (process.env.ALLOWED_ORIGIN) {
+  process.env.ALLOWED_ORIGIN.split(',').forEach(o => {
+    const trimmed = o.trim()
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed)
+    }
+  })
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return callback(null, true)
+    }
+    return callback(new Error('Not allowed by CORS'))
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Device-Id'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.get('/api/health', async (_req, res, next) => {
@@ -19,7 +49,7 @@ app.get('/api/health', async (_req, res, next) => {
 })
 
 const server = createServer(app)
-const io = new Server(server, { cors: { origin: allowedOrigin } })
+const io = new Server(server, { cors: corsOptions })
 const { Pool } = pg
 const database = new Pool({ connectionString: process.env.DATABASE_URL, ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false } })
 const port = Number(process.env.PORT || 3001)
