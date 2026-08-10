@@ -32,6 +32,7 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: false,
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api/],
       },
       devOptions: {
         enabled: false
